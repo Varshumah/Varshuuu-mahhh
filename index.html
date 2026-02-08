@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>My Heart 💌</title>
+
+<style>
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  background: #cce7ff; /* baby blue */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Georgia, serif;
+  overflow: hidden;
+}
+
+/* FLOATING BLUE HEARTS */
+.hearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  color: #3b82f6; /* blue color */
+}
+
+.heart {
+  position: absolute;
+  bottom: -30px;
+  animation: floatUp linear infinite;
+  color: inherit; /* inherit blue color */
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120vh);
+    opacity: 0;
+  }
+}
+
+/* ENVELOPE */
+.envelope {
+  width: 260px;
+  height: 160px;
+  background: #ff8fa3;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 130px solid transparent;
+  border-right: 130px solid transparent;
+  border-bottom: 90px solid #ff6f91;
+}
+
+.seal {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 26px;
+}
+
+/* LETTER */
+.letter {
+  position: absolute;
+  width: 320px;
+  background: #ff7f50; /* coral */
+  padding: 25px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: 1s;
+  z-index: 4;
+  color: white; /* text color for coral bg */
+}
+
+.letter.show {
+  opacity: 1;
+  transform: translateY(-50%);
+}
+
+.letter p {
+  text-transform: uppercase; /* make message caps */
+}
+
+/* OPTIONS */
+.choice-container {
+  position: absolute;
+  bottom: 80px;
+  display: none;
+  gap: 20px;
+  z-index: 4;
+}
+
+button {
+  padding: 14px 24px;
+  border-radius: 30px;
+  border: none;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
+
+.accept-btn {
+  background: #ff9dbb;
+}
+
+.deny-btn {
+  background: #6a5acd; /* dark lavender */
+}
+
+/* ACCEPT & DENY SCREEN */
+.accept-screen {
+  position: fixed;
+  inset: 0;
+  background: #6a5acd; /* dark lavender */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 10;
+}
+
+.accept-screen h1 {
+  font-size: 32px;
+  color: #dcdcdc;
+}
+
+/* 💋 / 👊🏻 / 😤 ANIMATION */
+.kiss {
+  position: absolute;
+  font-size: 36px;
+  animation: kissMove 4s ease-out forwards, kissTwinkle 1.2s infinite;
+}
+
+@keyframes kissMove {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes kissTwinkle {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+</style>
+</head>
+
+<body>
+  <div class="hearts"></div>
+
+  <div id="envelope" class="envelope" onclick="openLetter()">
+    <div class="flap"></div>
+    <div class="seal">❤️</div>
+  </div>
+
+  <div id="letter" class="letter">
+    <h2>💙 HAPPY 1ST YEAR LOVE ANNIVERSARY DARLING 💙🌍😽💙</h2>
+    <p>
+      MAY THIS LETTER IS SMALL BUT IT'S JUST A PIECE OF MY HEART RA CHLOEE 💙<br /><br />
+      YEAH IT'S BEEN ONE YEAR DAW, LITERALLY WE FIGHT TO THE CORE 👊🏻
+      BUT WE NEVER GIVE UP… AND I THINK SO IT'S JUST THE BIGGEST FLEX
+      IN OUR RELATIONSHIP 🥺🤌🏻<br /><br />
+      AND I WILL BE WITH YOU IN YOUR BOTH UPS AND DOWNS IN YOUR LIFE!!!<br /><br />
+      ORU VARSHAM ILLA, 100 VARUSHAM UNKUDA THA MUUH 💙🥹🌍
+    </p>
+  </div>
+
+  <div id="choices" class="choice-container">
+    <button class="accept-btn" onclick="acceptLetter()">ACCEPTING THE LETTER</button>
+    <button class="deny-btn" onclick="denyLetter()">DENYING THE LETTER</button>
+  </div>
+
+  <div id="acceptScreen" class="accept-screen">
+    <!-- Content changes dynamically -->
+  </div>
+
+  <script>
+    // FLOATING BLUE HEARTS
+    const hearts = document.querySelector(".hearts");
+    for (let i = 0; i < 40; i++) {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.innerText = "💙"; // blue hearts
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.fontSize = Math.random() * 10 + 10 + "px";
+      h.style.animationDuration = Math.random() * 6 + 6 + "s";
+      h.style.animationDelay = Math.random() * 5 + "s";
+      hearts.appendChild(h);
+    }
+
+    // OPEN LETTER
+    function openLetter() {
+      document.getElementById("envelope").style.display = "none";
+      document.getElementById("letter").classList.add("show");
+      document.getElementById("choices").style.display = "flex";
+    }
+
+    // ACCEPT LETTER 💙 + 💋 flying kisses and hearts
+    function acceptLetter() {
+      const screen = document.getElementById("acceptScreen");
+      screen.innerHTML = `
+      <h1>
+        NOW YOUR GIRL IS HAPPY 💙💋<br />
+        COME AND HUG ME AS SOON AS POSSIBLE 🫂🥹
+      </h1>
+    `;
+      screen.style.display = "flex";
+
+      for (let i = 0; i < 20; i++) {
+        // Blue heart flying
+        const kiss = document.createElement("div");
+        kiss.className = "kiss";
+        kiss.innerText = "💙";
+        kiss.style.left = "50%";
+        kiss.style.top = "50%";
+        kiss.style.setProperty("--x", Math.random() * 600 - 300 + "px");
+        kiss.style.setProperty("--y", Math.random() * 600 - 300 + "px");
+        screen.appendChild(kiss);
+        setTimeout(() => kiss.remove(), 4000);
+
+        // Kiss emoji flying
+        const kiss2 = document.createElement("div");
+        kiss2.className = "kiss";
+        kiss2.innerText = "💋";
+        kiss2.style.left = "50%";
+        kiss2.style.top = "50%";
+        kiss2.style.setProperty("--x", Math.random() * 600 - 300 + "px");
+        kiss2.style.setProperty("--y", Math.random() * 600 - 300 + "px");
+        screen.appendChild(kiss2);
+        setTimeout(() => kiss2.remove(), 4000);
+      }
+    }
+
+    // DENY LETTER 👊🏻 + 😤 flying emojis
+    function denyLetter() {
+      const screen = document.getElementById("acceptScreen");
+      screen.innerHTML = `
+      <h1>
+        HOW DARE YOU REJECT MY LETTER!!! 😤💔<br />
+        JUZ GO AND ACCEPT MY LETTER 😌<br />
+        YOU DON'T HAVE ANY OTHER CHOICE 🤣
+      </h1>
+    `;
+      screen.style.display = "flex";
+
+      for (let i = 0; i < 20; i++) {
+        // Punch emoji flying
+        const punch = document.createElement("div");
+        punch.className = "kiss";
+        punch.innerText = "👊🏻";
+        punch.style.left = "50%";
+        punch.style.top = "50%";
+        punch.style.setProperty("--x", Math.random() * 600 - 300 + "px");
+        punch.style.setProperty("--y", Math.random() * 600 - 300 + "px");
+        screen.appendChild(punch);
+        setTimeout(() => punch.remove(), 4000);
+
+        // Angry face emoji flying
+        const angry = document.createElement("div");
+        angry.className = "kiss";
+        angry.innerText = "😤";
+        angry.style.left = "50%";
+        angry.style.top = "50%";
+        angry.style.setProperty("--x", Math.random() * 600 - 300 + "px");
+        angry.style.setProperty("--y", Math.random() * 600 - 300 + "px");
+        screen.appendChild(angry);
+        setTimeout(() => angry.remove(), 4000);
+      }
+    }
+  </script>
+</body>
+</html>
